@@ -90,6 +90,32 @@ async function handleSubmit(e: React.FormEvent) {
     router.refresh()
   }
 
+async function handleImageUpload(index: number, file: File) {
+  const supabase = createClient()
+  const ext = file.name.split('.').pop()
+  const filename = `${Date.now()}-${index}.${ext}`
+
+  console.log('Subiendo archivo:', filename)
+
+  const { data, error } = await supabase.storage
+    .from('catalog-images')
+    .upload(filename, file, { upsert: true })
+
+  console.log('Upload result:', { data, error })
+
+  if (error || !data) return
+
+  const { data: urlData } = supabase.storage
+    .from('catalog-images')
+    .getPublicUrl(data.path)
+
+  console.log('Public URL:', urlData.publicUrl)
+
+  const updated = [...images]
+  updated[index] = urlData.publicUrl
+  setImages(updated)
+}
+
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
 
@@ -166,24 +192,67 @@ async function handleSubmit(e: React.FormEvent) {
 
       {/* Imágenes */}
       <div>
-        <label className="text-xs tracking-widest uppercase text-neutral-400 block mb-2">Imágenes (URLs)</label>
-        <div className="space-y-3">
+        <label className="text-xs tracking-widest uppercase text-neutral-400 block mb-3">
+          Imágenes (hasta 3)
+        </label>
+        <div className="space-y-4">
           {images.map((img, i) => (
-            <div key={i} className="flex items-center gap-3">
+            <div key={i} className="flex items-center gap-4">
               <span className="text-xs text-neutral-400 w-4">{i + 1}</span>
-              <input
-                type="url"
-                value={img}
-                onChange={e => {
-                  const updated = [...images]
-                  updated[i] = e.target.value
-                  setImages(updated)
-                }}
-                placeholder="https://..."
-                className="flex-1 border-b border-neutral-300 bg-transparent py-2 text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-800 transition-colors"
-              />
+
+              {/* Preview */}
+              <div className="w-16 h-16 flex-shrink-0 bg-neutral-100 flex items-center justify-center overflow-hidden">
+                {img ? (
+                  <img src={img} alt="" className="w-full h-full object-contain" />
+                ) : (
+                  <span className="text-xs text-neutral-300">—</span>
+                )}
+              </div>
+
+              <div className="flex-1 space-y-2">
+                {/* Upload */}
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <span className="px-3 py-1.5 border border-neutral-300 text-xs tracking-widest uppercase text-neutral-500 hover:border-neutral-800 hover:text-neutral-800 transition-colors">
+                    Subir archivo
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={e => {
+                      const file = e.target.files?.[0]
+                      if (file) handleImageUpload(i, file)
+                    }}
+                  />
+                </label>
+
+                {/* O pegar URL */}
+                <input
+                  type="url"
+                  value={img}
+                  onChange={e => {
+                    const updated = [...images]
+                    updated[i] = e.target.value
+                    setImages(updated)
+                  }}
+                  placeholder="O pegá una URL"
+                  className="w-full border-b border-neutral-300 bg-transparent py-1.5 text-xs text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-800 transition-colors"
+                />
+              </div>
+
+              {/* Eliminar */}
               {img && (
-                <img src={img} alt="" className="w-10 h-10 object-cover bg-neutral-100" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updated = [...images]
+                    updated[i] = ''
+                    setImages(updated)
+                  }}
+                  className="text-xs text-neutral-400 hover:text-red-500 transition-colors"
+                >
+                  ✕
+                </button>
               )}
             </div>
           ))}
