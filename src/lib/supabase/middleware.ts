@@ -25,15 +25,7 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Proteger rutas /admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { pathname } = request.nextUrl
-
-  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login') && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/admin/login'
-    return NextResponse.redirect(url)
-  }
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }

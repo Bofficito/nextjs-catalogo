@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import LogoutButton from '@/components/LogoutButton'
+import LogoutButton from '@/components/admin/LogoutButton'
 
 export default async function AdminLayout({
   children,
@@ -11,7 +11,7 @@ export default async function AdminLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) redirect('/admin/login')
+  if (!user) redirect('/login')
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -31,7 +31,7 @@ export default async function AdminLayout({
               href="/admin/categorias"
               className="text-sm text-neutral-500 hover:text-neutral-800 tracking-wide transition-colors"
             >
-              Categorías
+              Categorias
             </Link>
             <a
               href="/"
@@ -39,7 +39,7 @@ export default async function AdminLayout({
               rel="noopener noreferrer"
               className="text-sm text-neutral-500 hover:text-neutral-800 tracking-wide transition-colors"
             >
-              Ver catálogo
+              Ver catalogo
             </a>
           </div>
         </div>
