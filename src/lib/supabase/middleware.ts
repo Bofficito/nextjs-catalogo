@@ -35,11 +35,5 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  if (pathname === '/admin/login' && user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/admin/productos'
-    return NextResponse.redirect(url)
-  }
-
   return supabaseResponse
 }
