@@ -1,13 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Product } from '@/lib/supabase/types'
 import ProductModal from './ProductModal'
 
 export default function ProductCard({ product }: { product: Product }) {
   const [currentImage, setCurrentImage] = useState(0)
   const [showModal, setShowModal] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const images = product.images?.filter(Boolean) ?? []
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   function prev(e: React.MouseEvent) {
     e.stopPropagation()
@@ -23,12 +29,12 @@ export default function ProductCard({ product }: { product: Product }) {
     <div className="group flex flex-col cursor-pointer" onClick={() => setShowModal(true)}>
 
       {/* Imagen */}
-      <div className="relative aspect-square bg-neutral-100 overflow-hidden mb-4">
+      <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden mb-4">
         {images.length > 0 ? (
           <img
             src={images[currentImage]}
             alt={product.title}
-            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -104,8 +110,9 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
         </div>
       </div>
-      {showModal && (
-        <ProductModal product={product} onClose={() => setShowModal(false)} />
+      {mounted && showModal && createPortal(
+        <ProductModal product={product} onClose={() => setShowModal(false)} />,
+        document.body
       )}
     </div>
   )

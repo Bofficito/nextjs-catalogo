@@ -52,7 +52,7 @@ export default function ProductModal({
 
           {/* Galería */}
           <div className="w-full md:w-1/2 flex-shrink-0">
-            <div className="relative aspect-square bg-neutral-100">
+            <div className="relative aspect-[4/3] bg-neutral-100">
               {images.length > 0 ? (
                 <img
                   src={images[currentImage]}
@@ -159,7 +159,7 @@ export default function ProductModal({
             {product.description && (
               <div className="mb-6 flex-1">
                 <p className="text-xs tracking-widest uppercase text-neutral-400 mb-2">Descripción</p>
-                <p className="text-sm text-neutral-600 leading-relaxed">
+                <p className="text-sm text-neutral-600 leading-relaxed whitespace-pre-wrap">
                   {product.description}
                 </p>
               </div>

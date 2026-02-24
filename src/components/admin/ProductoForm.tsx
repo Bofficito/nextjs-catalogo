@@ -137,7 +137,7 @@ async function handleImageUpload(index: number, file: File) {
         <textarea
           value={description}
           onChange={e => setDescription(e.target.value)}
-          rows={3}
+          rows={9}
           className="w-full border-b border-neutral-300 bg-transparent py-2 text-sm text-neutral-800 focus:outline-none focus:border-neutral-800 transition-colors resize-none"
         />
       </div>
