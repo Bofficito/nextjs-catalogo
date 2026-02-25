@@ -26,7 +26,7 @@ export default function ProductCard({ product }: { product: Product }) {
   }
   
   return (
-    <div className="group flex flex-col cursor-pointer" onClick={() => setShowModal(true)}>
+    <div className="group flex flex-col cursor-pointer" onClick={e => { e.stopPropagation(); setShowModal(true) }}>
 
       {/* Imagen */}
       <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden mb-4">

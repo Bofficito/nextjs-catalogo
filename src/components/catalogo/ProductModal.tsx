@@ -39,13 +39,22 @@ export default function ProductModal({
     }
   }, [onClose])
 
+  useEffect(() => {
+    images.forEach(src => {
+      const img = new Image()
+      img.src = src
+    })
+  }, [])
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center md:p-4 bg-black/50"
+      onMouseDown={e => {
+        if (e.target === e.currentTarget) onClose()
+      }}
     >
       <div
-        className="bg-white w-full max-w-6xl max-h-[95vh] flex flex-col"
+        className="bg-white w-full md:max-w-6xl max-h-[100dvh] md:max-h-[95vh] flex flex-col"
         onClick={e => e.stopPropagation()}
       >
 
@@ -58,9 +67,10 @@ export default function ProductModal({
               <div className="relative aspect-[4/3] bg-neutral-100">
                 {images.length > 0 ? (
                   <img
+                    key={currentImage}
                     src={images[currentImage]}
                     alt={product.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover animate-fade-in"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
