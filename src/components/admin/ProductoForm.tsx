@@ -24,7 +24,7 @@ export default function ProductoForm({
   const [categoryId, setCategoryId] = useState(product?.category_id ?? '')
   const [isReserved, setIsReserved] = useState(product?.is_reserved ?? false)
   const [isActive, setIsActive] = useState(product?.is_active ?? true)
-  const [images, setImages] = useState<string[]>(product?.images ?? ['', '', ''])
+  const [images, setImages] = useState<string[]>(product?.images?.length ? product.images : [''])
   const [syncing, setSyncing] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -193,14 +193,13 @@ async function handleImageUpload(index: number, file: File) {
       {/* Imágenes */}
       <div>
         <label className="text-xs tracking-widest uppercase text-neutral-400 block mb-3">
-          Imágenes (hasta 3)
+          Imágenes
         </label>
         <div className="space-y-4">
           {images.map((img, i) => (
             <div key={i} className="flex items-center gap-4">
               <span className="text-xs text-neutral-400 w-4">{i + 1}</span>
 
-              {/* Preview */}
               <div className="w-16 h-16 flex-shrink-0 bg-neutral-100 flex items-center justify-center overflow-hidden">
                 {img ? (
                   <img src={img} alt="" className="w-full h-full object-contain" />
@@ -210,7 +209,6 @@ async function handleImageUpload(index: number, file: File) {
               </div>
 
               <div className="flex-1 space-y-2">
-                {/* Upload */}
                 <label className="flex items-center gap-2 cursor-pointer">
                   <span className="px-3 py-1.5 border border-neutral-300 text-xs tracking-widest uppercase text-neutral-500 hover:border-neutral-800 hover:text-neutral-800 transition-colors">
                     Subir archivo
@@ -225,8 +223,6 @@ async function handleImageUpload(index: number, file: File) {
                     }}
                   />
                 </label>
-
-                {/* O pegar URL */}
                 <input
                   type="url"
                   value={img}
@@ -240,23 +236,25 @@ async function handleImageUpload(index: number, file: File) {
                 />
               </div>
 
-              {/* Eliminar */}
-              {img && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updated = [...images]
-                    updated[i] = ''
-                    setImages(updated)
-                  }}
-                  className="text-xs text-neutral-400 hover:text-red-500 transition-colors"
-                >
-                  ✕
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setImages(prev => prev.filter((_, idx) => idx !== i))}
+                className="text-xs text-neutral-400 hover:text-red-500 transition-colors"
+              >
+                ✕
+              </button>
             </div>
           ))}
         </div>
+
+        {/* Botón agregar imagen */}
+        <button
+          type="button"
+          onClick={() => setImages(prev => [...prev, ''])}
+          className="mt-4 text-xs tracking-widest uppercase text-neutral-400 hover:text-neutral-800 border-b border-neutral-300 hover:border-neutral-800 pb-0.5 transition-colors"
+        >
+          + Agregar imagen
+        </button>
       </div>
 
       {/* Toggles */}
