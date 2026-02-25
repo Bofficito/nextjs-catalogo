@@ -29,6 +29,8 @@ export default function ProductoForm({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [condition, setCondition] = useState<string>(product?.condition ?? 'usado')
+  const [stock, setStock] = useState<string>(product?.stock?.toString() ?? '1')
+
 
 
   async function handleSync() {
@@ -70,6 +72,7 @@ async function handleSubmit(e: React.FormEvent) {
       ml_item_id: mlItemId.trim() || null,
       ml_url: mlUrl.trim() || null,
       category_id: categoryId || null,
+      stock: stock ? parseInt(stock) : 1,
       is_reserved: isReserved,
       is_active: isActive,
       images: images.filter(Boolean),
@@ -150,6 +153,16 @@ async function handleImageUpload(index: number, file: File) {
             type="text"
             value={price}
             onChange={e => setPrice(e.target.value)}
+            className="w-full border-b border-neutral-300 bg-transparent py-2 text-sm text-neutral-800 focus:outline-none focus:border-neutral-800 transition-colors"
+          />
+        </div>
+        <div>
+          <label className="text-xs tracking-widest uppercase text-neutral-400 block mb-2">Stock</label>
+          <input
+            type="number"
+            min="1"
+            value={stock}
+            onChange={e => setStock(e.target.value)}
             className="w-full border-b border-neutral-300 bg-transparent py-2 text-sm text-neutral-800 focus:outline-none focus:border-neutral-800 transition-colors"
           />
         </div>

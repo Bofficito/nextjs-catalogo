@@ -20,4 +20,5 @@ export type Product = {
   created_at: string
   updated_at: string
   catalog_categories?: Category
+  stock: number | null
 }

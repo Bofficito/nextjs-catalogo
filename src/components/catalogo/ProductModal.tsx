@@ -194,6 +194,13 @@ export default function ProductModal({
                 </span>
               </div>
 
+              {/* Stock */}
+              {product.stock && product.stock > 1 && !product.is_reserved && (
+                <p className="text-xs text-neutral-400 tracking-wide -mt-3 mb-5">
+                  {product.stock} unidades disponibles
+                </p>
+              )}
+
               {/* Descripción */}
               {product.description && (
                 <div className="mb-5">
